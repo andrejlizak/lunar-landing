@@ -23,11 +23,17 @@ class LunarLanderGUI:
         self.control_frame = tk.Frame(root)
         self.control_frame.pack()
 
+        self.dfs_button = tk.Button(self.control_frame, text="Run DFS", command=self.run_dfs)
+        self.dfs_button.pack(side=tk.LEFT)
+
         self.bfs_button = tk.Button(self.control_frame, text="Run BFS", command=self.run_bfs)
         self.bfs_button.pack(side=tk.LEFT)
 
         self.a_star_button = tk.Button(self.control_frame, text="Run A*", command=self.run_a_star)
         self.a_star_button.pack(side=tk.LEFT)
+
+        self.greeedy_search_button = tk.Button(self.control_frame, text="Run GreedySearch", command=self.run_a_star)
+        self.greeedy_search_button.pack(side=tk.LEFT)
 
     def draw_grid(self):
         for i in range(self.board_size):
@@ -70,6 +76,15 @@ class LunarLanderGUI:
     def run_bfs(self):
         print("Running BFS...")
         path = self.game.bfs()
+        if path:
+            for position in path:
+                self.game.update_game_elements(position)
+                self.root.update()
+                self.root.after(500)
+
+    def run_dfs(self):
+        print("Running DFS...")
+        path = self.game.dfs()
         if path:
             for position in path:
                 self.game.update_game_elements(position)
