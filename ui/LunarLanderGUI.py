@@ -1,5 +1,5 @@
 import tkinter as tk
-
+import time
 
 class LunarLanderGUI:
     def __init__(self, root, game, board_size=5):
@@ -19,9 +19,15 @@ class LunarLanderGUI:
         # Draw the initial grid
         self.draw_grid()
 
+        #stats section
+        self.stats = tk.Frame(root)
+        self.stats.pack()
+
         # Control buttons
         self.control_frame = tk.Frame(root)
         self.control_frame.pack()
+        self.timeText = tk.Text(self.stats, height=2, width=30)
+        self.timeText.pack(side=tk.LEFT)
 
         self.dfs_button = tk.Button(self.control_frame, text="Run DFS", command=self.run_dfs)
         self.dfs_button.pack(side=tk.LEFT)
@@ -61,12 +67,14 @@ class LunarLanderGUI:
 
         # Draw the goal
         goal_x, goal_y = goal
-        self.draw_cell(goal_x, goal_y, "#780000")
+        middle_id = self.draw_cell(goal_x, goal_y, "#780000")
+        self.canvas.tag_lower(middle_id)
 
-        # Draw the red figurine and bring it to the front
-        x, y = red_position
-        red_id = self.draw_cell(x, y, "red")
-        self.canvas.tag_raise(red_id)
+        #Draw the red figurine and bring it to the front
+        if red_position is not None:
+            x, y = red_position
+            red_id = self.draw_cell(x, y, "red")
+            self.canvas.tag_raise(red_id)
 
     def draw_cell(self, x, y, color):
         x1, y1 = x * self.cell_size, y * self.cell_size
@@ -84,12 +92,10 @@ class LunarLanderGUI:
 
     def run_dfs(self):
         print("Running DFS...")
-        path = self.game.dfs()
-        if path:
-            for position in path:
-                self.game.update_game_elements(position)
-                self.root.update()
-                self.root.after(500)
+        start = time.time()
+        self.game.dfs()
+        end = time.time()
+        self.timeText.insert(tk.END, f"Čas algoritmu: {round((end - start), 3)}\n")
 
     def run_a_star(self):
         print("Running A*...")
