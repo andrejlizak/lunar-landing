@@ -35,10 +35,10 @@ class LunarLanderGUI:
         self.bfs_button = tk.Button(self.control_frame, text="Run BFS", command=self.run_bfs)
         self.bfs_button.pack(side=tk.LEFT)
 
-        self.a_star_button = tk.Button(self.control_frame, text="Run A*", command=self.run_a_star)
+        self.a_star_button = tk.Button(self.control_frame, text="Run A*", command=self.run_A_star)
         self.a_star_button.pack(side=tk.LEFT)
 
-        self.greeedy_search_button = tk.Button(self.control_frame, text="Run GreedySearch", command=self.run_a_star)
+        self.greeedy_search_button = tk.Button(self.control_frame, text="Run GreedySearch", command=self.run_greedy)
         self.greeedy_search_button.pack(side=tk.LEFT)
 
     def draw_grid(self):
@@ -101,11 +101,24 @@ class LunarLanderGUI:
         else:
             self.timeText.insert(tk.END, "Nenašlo sa riešenie\n")
 
-    def run_a_star(self):
-        print("Running A*...")
-        path = self.game.a_star()
+    def run_greedy(self):
+        print("Running GreedySearch...")
+        self.timeText.delete(1.0, tk.END)
+        start = time.time()
+        path = self.game.greedy_search()
+        end = time.time()
         if path:
-            for position in path:
-                self.game.update_game_elements(position)
-                self.root.update()
-                self.root.after(500)
+            self.timeText.insert(tk.END, f"Čas algoritmu GreedySearch: {round((end - start), 3)}\n")
+        else:
+            self.timeText.insert(tk.END, "Nenašlo sa riešenie\n")
+
+    def run_A_star(self):
+        print("Running A*...")
+        self.timeText.delete(1.0, tk.END)
+        start = time.time()
+        path = self.game.greedy_search()
+        end = time.time()
+        if path:
+            self.timeText.insert(tk.END, f"Čas algoritmu A*: {round((end - start), 3)}\n")
+        else:
+            self.timeText.insert(tk.END, "Nenašlo sa riešenie\n")
