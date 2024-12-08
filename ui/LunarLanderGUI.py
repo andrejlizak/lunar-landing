@@ -1,5 +1,7 @@
 import tkinter as tk
 import time
+from openpyxl import Workbook
+
 
 class LunarLanderGUI:
     def __init__(self, root, game, board_size=5):
@@ -29,17 +31,13 @@ class LunarLanderGUI:
         self.timeText = tk.Text(self.stats, height=2, width=30)
         self.timeText.pack(side=tk.LEFT)
 
-        self.dfs_button = tk.Button(self.control_frame, text="Run DFS", command=self.run_dfs)
+        self.dfs_button = tk.Button(self.control_frame, text="Start", command=self.run_all)
         self.dfs_button.pack(side=tk.LEFT)
 
-        self.bfs_button = tk.Button(self.control_frame, text="Run BFS", command=self.run_bfs)
-        self.bfs_button.pack(side=tk.LEFT)
-
-        self.a_star_button = tk.Button(self.control_frame, text="Run A*", command=self.run_A_star)
-        self.a_star_button.pack(side=tk.LEFT)
-
-        self.greeedy_search_button = tk.Button(self.control_frame, text="Run GreedySearch", command=self.run_greedy)
-        self.greeedy_search_button.pack(side=tk.LEFT)
+        # Initialize Excel workbook
+        self.workbook = Workbook()
+        self.sheet = self.workbook.active
+        self.sheet.append(["DFS Time", "BFS Time", "Greedy Time", "A* Time"])
 
     def draw_grid(self):
         for i in range(self.board_size):
@@ -83,12 +81,16 @@ class LunarLanderGUI:
 
     def run_bfs(self):
         print("Running BFS...")
-        path = self.game.bfs()
+        self.timeText.delete(1.0, tk.END)
+        start = time.time()
+        path = self.game.dfs()
+        end = time.time()
         if path:
-            for position in path:
-                self.game.update_game_elements(position)
-                self.root.update()
-                self.root.after(500)
+            self.timeText.insert(tk.END, f"Čas algoritmu BFS: {round((end - start), 3)}\n")
+            return round((end - start), 3)
+        else:
+            self.timeText.insert(tk.END, "Nenašlo sa riešenie\n")
+            return -1
 
     def run_dfs(self):
         print("Running DFS...")
@@ -98,8 +100,10 @@ class LunarLanderGUI:
         end = time.time()
         if path:
             self.timeText.insert(tk.END, f"Čas algoritmu DFS: {round((end - start), 3)}\n")
+            return round((end - start), 3)
         else:
             self.timeText.insert(tk.END, "Nenašlo sa riešenie\n")
+            return -1
 
     def run_greedy(self):
         print("Running GreedySearch...")
@@ -109,8 +113,10 @@ class LunarLanderGUI:
         end = time.time()
         if path:
             self.timeText.insert(tk.END, f"Čas algoritmu GreedySearch: {round((end - start), 3)}\n")
+            return round((end - start), 3)
         else:
             self.timeText.insert(tk.END, "Nenašlo sa riešenie\n")
+            return -1
 
     def run_A_star(self):
         print("Running A*...")
@@ -120,5 +126,15 @@ class LunarLanderGUI:
         end = time.time()
         if path:
             self.timeText.insert(tk.END, f"Čas algoritmu A*: {round((end - start), 3)}\n")
+            return round((end - start), 3)
         else:
             self.timeText.insert(tk.END, "Nenašlo sa riešenie\n")
+            return -1
+
+    def run_all(self):
+        # Append the times to the Excel sheet
+        self.sheet.append([self.run_dfs(), self.run_bfs(), self.run_greedy(), self.run_A_star()])
+
+    def export(self):
+        # Save the workbook after every state
+        self.workbook.save("game_results.xlsx")

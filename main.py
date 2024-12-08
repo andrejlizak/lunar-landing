@@ -1,4 +1,5 @@
 import tkinter as tk
+from itertools import count
 
 from game.LunarLanderGame import LunarLanderGame
 from game.StateLoader import StateLoader
@@ -9,12 +10,16 @@ root = tk.Tk()
 
 # Načítanie počiatočných stavov
 state_loader = StateLoader('game_states.json')
-initial_state = state_loader.get_random_state()
+initial_states = state_loader.load_initial_states()
 
-# Inicializácia hry s náhodným počiatočným stavom
-if initial_state:
-    gui = LunarLanderGUI(root, None)
+# Inicializácia ui
+gui = LunarLanderGUI(root, None)
+
+# Iterácia cez všetky počiatočné stavy
+for initial_state in initial_states:
     game = LunarLanderGame(initial_state, gui)
     gui.game = game
+    gui.run_all()
 
+gui.export()
 root.mainloop()
