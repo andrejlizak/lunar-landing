@@ -9,6 +9,7 @@ class LunarLanderGame:
         self.goal = tuple(initial_state["goal"])
         self.gui = gui
         self.create_board()
+        self.delay_between_moves = 0
 
     def create_board(self):
         self.gui.draw_grid()  # Draw the empty grid
@@ -88,8 +89,7 @@ class LunarLanderGame:
 
                     self.update_game_elements(new_positions)
                     self.gui.root.update()
-                    delay_between_moves = 0
-                    self.gui.root.after(delay_between_moves)
+                    self.gui.root.after(self.delay_between_moves)
 
                     print(f"moving: {figure} from {position} to {move}")
                     print(f"Current positions: {new_positions}")
@@ -147,8 +147,7 @@ class LunarLanderGame:
 
                     self.update_game_elements(new_positions)
                     self.gui.root.update()
-                    delay_between_moves = 0
-                    self.gui.root.after(delay_between_moves)
+                    self.gui.root.after(self.delay_between_moves)
 
                     print(f"moving: {figure} from {position} to {move}")
                     print(f"Current positions: {new_positions}")
@@ -214,8 +213,7 @@ class LunarLanderGame:
 
                     self.update_game_elements(new_positions)
                     self.gui.root.update()
-                    delay_between_moves = 0
-                    self.gui.root.after(delay_between_moves)
+                    self.gui.root.after(self.delay_between_moves)
 
                     print(f"moving: {figure} from {position} to {move}")
                     print(f"Current positions: {new_positions}")

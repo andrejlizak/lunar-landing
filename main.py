@@ -17,6 +17,7 @@ gui = LunarLanderGUI(root, None)
 
 # Iterácia cez všetky počiatočné stavy
 for initial_state in initial_states:
+    gui.root.update_idletasks()
     game = LunarLanderGame(initial_state, gui)
     gui.game = game
     gui.run_all()

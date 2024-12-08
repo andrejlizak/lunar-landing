@@ -81,54 +81,58 @@ class LunarLanderGUI:
 
     def run_bfs(self):
         print("Running BFS...")
-        self.timeText.delete(1.0, tk.END)
         start = time.time()
         path = self.game.dfs()
         end = time.time()
         if path:
             self.timeText.insert(tk.END, f"Čas algoritmu BFS: {round((end - start), 3)}\n")
+            self.root.update_idletasks()
             return round((end - start), 3)
         else:
             self.timeText.insert(tk.END, "Nenašlo sa riešenie\n")
+            self.root.update_idletasks()
             return -1
 
     def run_dfs(self):
         print("Running DFS...")
-        self.timeText.delete(1.0, tk.END)
         start = time.time()
         path = self.game.dfs()
         end = time.time()
         if path:
             self.timeText.insert(tk.END, f"Čas algoritmu DFS: {round((end - start), 3)}\n")
+            self.root.update_idletasks()
             return round((end - start), 3)
         else:
             self.timeText.insert(tk.END, "Nenašlo sa riešenie\n")
+            self.root.update_idletasks()
             return -1
 
     def run_greedy(self):
         print("Running GreedySearch...")
-        self.timeText.delete(1.0, tk.END)
         start = time.time()
         path = self.game.greedy_search()
         end = time.time()
         if path:
             self.timeText.insert(tk.END, f"Čas algoritmu GreedySearch: {round((end - start), 3)}\n")
+            self.root.update_idletasks()
             return round((end - start), 3)
         else:
             self.timeText.insert(tk.END, "Nenašlo sa riešenie\n")
+            self.root.update_idletasks()
             return -1
 
     def run_A_star(self):
         print("Running A*...")
-        self.timeText.delete(1.0, tk.END)
         start = time.time()
         path = self.game.greedy_search()
         end = time.time()
         if path:
             self.timeText.insert(tk.END, f"Čas algoritmu A*: {round((end - start), 3)}\n")
+            self.root.update_idletasks()
             return round((end - start), 3)
         else:
             self.timeText.insert(tk.END, "Nenašlo sa riešenie\n")
+            self.root.update_idletasks()
             return -1
 
     def run_all(self):
