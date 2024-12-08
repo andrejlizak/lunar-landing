@@ -38,7 +38,7 @@ class LunarLanderGUI:
         self.a_star_button = tk.Button(self.control_frame, text="Run A*", command=self.run_a_star)
         self.a_star_button.pack(side=tk.LEFT)
 
-        self.greeedy_search_button = tk.Button(self.control_frame, text="Run GreedySearch", command=self.run_a_star)
+        self.greeedy_search_button = tk.Button(self.control_frame, text="Run GreedySearch", command=self.run_greedy)
         self.greeedy_search_button.pack(side=tk.LEFT)
 
     def draw_grid(self):
@@ -94,6 +94,13 @@ class LunarLanderGUI:
         print("Running DFS...")
         start = time.time()
         self.game.dfs()
+        end = time.time()
+        self.timeText.insert(tk.END, f"Čas algoritmu: {round((end - start), 3)}\n")
+
+    def run_greedy(self):
+        print("Running Greedy Search...")
+        start = time.time()
+        self.game.greedy_search()
         end = time.time()
         self.timeText.insert(tk.END, f"Čas algoritmu: {round((end - start), 3)}\n")
 
