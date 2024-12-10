@@ -82,7 +82,7 @@ class LunarLanderGUI:
     def run_bfs(self):
         print("Running BFS...")
         start = time.time()
-        path = self.game.dfs()
+        path = self.game.bfs()
         end = time.time()
         if path:
             self.timeText.insert(tk.END, f"Čas algoritmu BFS: {round((end - start), 3)}\n")

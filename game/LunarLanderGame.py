@@ -1,5 +1,5 @@
 import heapq
-from queue import Queue
+from collections import deque
 
 class LunarLanderGame:
     def __init__(self, initial_state, gui):
@@ -53,18 +53,16 @@ class LunarLanderGame:
         return moves
 
     def dfs(self):
-        """Performs Depth First Search to find a path to the goal."""
         figures_with_red = self.figures.copy()
         figures_with_red.update({'red': self.red_position})
 
         stack = [(figures_with_red, self.red_position, [])]  # Stack: (figures_positions, red_position, path_to_red)
         visited = set()
-
+        step_count = 0
 
         while stack:
+            step_count += 1
             current_positions, red_position, path = stack.pop()
-
-            print(f"Current positions: {current_positions}")
 
             state_identifier = (tuple(sorted(current_positions.items())), red_position)
             if state_identifier in visited:
@@ -74,36 +72,73 @@ class LunarLanderGame:
             new_path = path + [red_position]
 
             if red_position == self.goal:
-                stack.append((current_positions, red_position, new_path))
-                print(stack)
-                return stack
+                print(step_count)
+                return new_path, step_count
 
             for figure, position in current_positions.items():
-                print(f"Current figure: {figure}, position: {position}")
                 possible_moves = self.get_possible_moves(position, current_positions)
-                print(f"Possible moves: {possible_moves}")
                 for move in possible_moves:
                     # Create a new state where the current figure moves
                     new_positions = current_positions.copy()
                     new_positions[figure] = move
 
+                    # Simulate the move (optional GUI update)
                     self.update_game_elements(new_positions)
                     self.gui.root.update()
                     self.gui.root.after(self.delay_between_moves)
 
-                    print(f"moving: {figure} from {position} to {move}")
-                    print(f"Current positions: {new_positions}")
-
                     new_red_position = move if figure == "red" else red_position
 
                     stack.append((new_positions, new_red_position, new_path))
-            print("\n")
 
-        print("No solution found.")
-        return []
+        # print("No solution found.")
+        return [], step_count
+
+    def bfs(self):
+        figures_with_red = self.figures.copy()
+        figures_with_red.update({'red': self.red_position})
+
+        queue = deque(
+            [(figures_with_red, self.red_position, [])])  # Queue: (figures_positions, red_position, path_to_red)
+        visited = set()
+        step_count = 0
+
+        while queue:
+            step_count += 1
+            current_positions, red_position, path = queue.popleft()
+
+            state_identifier = (tuple(sorted(current_positions.items())), red_position)
+            if state_identifier in visited:
+                continue
+
+            visited.add(state_identifier)
+            new_path = path + [red_position]
+
+            if red_position == self.goal:
+                print(step_count)
+                return new_path, step_count
+
+            for figure, position in current_positions.items():
+                possible_moves = self.get_possible_moves(position, current_positions)
+                for move in possible_moves:
+                    # Create a new state where the current figure moves
+                    new_positions = current_positions.copy()
+                    new_positions[figure] = move
+
+                    # Simulate the move (optional GUI update)
+                    self.update_game_elements(new_positions)
+                    self.gui.root.update()
+                    self.gui.root.after(self.delay_between_moves)
+
+                    new_red_position = move if figure == "red" else red_position
+
+                    queue.append((new_positions, new_red_position, new_path))
+
+        # print("No solution found.")
+        return [], step_count
 
     def greedy_search(self):
-        """Performs Greedy Search to find a path to the goal."""
+        """Performs Greedy Search to find a path to the goal and counts the number of steps."""
         figures_with_red = self.figures.copy()
         figures_with_red.update({'red': self.red_position})
 
@@ -115,8 +150,10 @@ class LunarLanderGame:
         heapq.heappush(heap, start_state)
 
         visited = set()
+        step_count = 0
 
         while heap:
+            step_count += 1
             _, figures_tuple, red_position, path = heapq.heappop(heap)
 
             # Convert the tuple of figures back into a dictionary
@@ -132,25 +169,16 @@ class LunarLanderGame:
 
             # Check if the red position is the goal
             if red_position == self.goal:
-                print("Goal reached!")
-                return new_path
+                print(step_count)
+                return new_path, step_count
 
             for figure, position in current_positions.items():
-                print(f"Current figure: {figure}, position: {position}")
                 possible_moves = self.get_possible_moves(position, current_positions)
-                print(f"Possible moves: {possible_moves}")
                 for move in possible_moves:
                     # Create a new state
                     new_positions = current_positions.copy()
                     new_positions[figure] = move
                     new_red_position = move if figure == "red" else red_position
-
-                    self.update_game_elements(new_positions)
-                    self.gui.root.update()
-                    self.gui.root.after(self.delay_between_moves)
-
-                    print(f"moving: {figure} from {position} to {move}")
-                    print(f"Current positions: {new_positions}")
 
                     # Convert the dictionary into a sorted tuple
                     new_positions_tuple = tuple(sorted(new_positions.items()))
@@ -161,11 +189,11 @@ class LunarLanderGame:
                         (self.heuristic(new_red_position), new_positions_tuple, new_red_position, new_path),
                     )
 
-        print("No solution found.")
-        return []
+        # print("No solution found.")
+        return [], step_count
 
     def a_star_search(self):
-        """Performs A* Search to find a path to the goal."""
+        """Performs A* Search to find a path to the goal and counts the number of steps."""
         figures_with_red = self.figures.copy()
         figures_with_red.update({'red': self.red_position})
 
@@ -181,8 +209,10 @@ class LunarLanderGame:
         heapq.heappush(heap, start_state)
 
         visited = set()
+        step_count = 0
 
         while heap:
+            step_count += 1
             _, cost_so_far, figures_tuple, red_position, path = heapq.heappop(heap)
 
             # Convert the tuple of figures back into a dictionary
@@ -198,25 +228,16 @@ class LunarLanderGame:
 
             # Check if the red position is the goal
             if red_position == self.goal:
-                print("Goal reached!")
-                return new_path
+                print(step_count)
+                return new_path, step_count
 
             for figure, position in current_positions.items():
-                print(f"Current figure: {figure}, position: {position}")
                 possible_moves = self.get_possible_moves(position, current_positions)
-                print(f"Possible moves: {possible_moves}")
                 for move in possible_moves:
                     # Create a new state
                     new_positions = current_positions.copy()
                     new_positions[figure] = move
                     new_red_position = move if figure == "red" else red_position
-
-                    self.update_game_elements(new_positions)
-                    self.gui.root.update()
-                    self.gui.root.after(self.delay_between_moves)
-
-                    print(f"moving: {figure} from {position} to {move}")
-                    print(f"Current positions: {new_positions}")
 
                     # Calculate g(n) (cost-so-far) and f(n)
                     new_cost_so_far = cost_so_far + 1  # Assume every move has a cost of 1
@@ -232,8 +253,8 @@ class LunarLanderGame:
                         (f_value, new_cost_so_far, new_positions_tuple, new_red_position, new_path),
                     )
 
-        print("No solution found.")
-        return []
+        # print("No solution found.")
+        return [], step_count
 
     def heuristic(self, position):
         """Calculates the Manhattan distance from a position to the goal."""
