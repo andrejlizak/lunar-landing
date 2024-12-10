@@ -82,7 +82,6 @@ class LunarLanderGame:
                     new_positions = current_positions.copy()
                     new_positions[figure] = move
 
-                    # Simulate the move (optional GUI update)
                     self.update_game_elements(new_positions)
                     self.gui.root.update()
                     self.gui.root.after(self.delay_between_moves)
@@ -125,7 +124,6 @@ class LunarLanderGame:
                     new_positions = current_positions.copy()
                     new_positions[figure] = move
 
-                    # Simulate the move (optional GUI update)
                     self.update_game_elements(new_positions)
                     self.gui.root.update()
                     self.gui.root.after(self.delay_between_moves)
