@@ -178,6 +178,10 @@ class LunarLanderGame:
                     new_positions[figure] = move
                     new_red_position = move if figure == "red" else red_position
 
+                    self.update_game_elements(new_positions)
+                    self.gui.root.update()
+                    self.gui.root.after(self.delay_between_moves)
+
                     # Convert the dictionary into a sorted tuple
                     new_positions_tuple = tuple(sorted(new_positions.items()))
 
@@ -236,6 +240,10 @@ class LunarLanderGame:
                     new_positions = current_positions.copy()
                     new_positions[figure] = move
                     new_red_position = move if figure == "red" else red_position
+
+                    self.update_game_elements(new_positions)
+                    self.gui.root.update()
+                    self.gui.root.after(self.delay_between_moves)
 
                     # Calculate g(n) (cost-so-far) and f(n)
                     new_cost_so_far = cost_so_far + 1  # Assume every move has a cost of 1
